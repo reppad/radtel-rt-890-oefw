@@ -1,5 +1,7 @@
 TARGET = firmware
 
+MOTO_STARTUP_TONE 		:= 1
+
 OBJS =
 # Startup files
 OBJS += startup/start.o
@@ -125,6 +127,10 @@ INC += -I $(SDK)/libraries/drivers/inc/
 LIBS =
 
 DEPS = $(OBJS:.o=.d)
+
+ifeq ($(MOTO_STARTUP_TONE),1)
+	CFLAGS += -DMOTO_STARTUP_TONE
+endif
 
 all: $(TARGET)
 	$(OBJCOPY) -O binary $< $<.bin

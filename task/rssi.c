@@ -134,7 +134,7 @@ void Task_CheckRSSI(void)
 		} else if (!gNoaaMode) {
 			if (gReceptionMode) {
 				StartRX();
-			} else if ((gVfoInfo[gCurrentVfo].CodeType == CODE_TYPE_OFF && !gMainVfo->bMuteEnabled) || gMainVfo->bIsAM || Result == 1) {
+			} else if ((gVfoInfo[gCurrentVfo].CodeType == CODE_TYPE_OFF && !gMainVfo->bMuteEnabled) || gMainVfo->gModulationType > 0 || Result == 1) {
 				FUN_08006b38();
 			}
 		} else if (Result == 1) {

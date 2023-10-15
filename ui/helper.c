@@ -609,7 +609,7 @@ void UI_DrawVox(void)
 	if (gVoxRssiUpdateTimer == 0) {
 		uint16_t Vox;
 
-		gVoxRssiUpdateTimer = 200;
+		gVoxRssiUpdateTimer = 100;
 		Vox = BK4819_ReadRegister(0x64);
 		if (Vox > 5000) {
 			Vox = 5000;

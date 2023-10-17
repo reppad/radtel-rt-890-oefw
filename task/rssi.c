@@ -85,7 +85,7 @@ static void CheckRSSI(void)
 		uint16_t RSSI;
 
 		gVoxRssiUpdateTimer = 100;
-		RSSI = BK4819_ReadRegister(0x67) & 0x1FF;
+		RSSI = BK4819_GetRSSI();
 		if (RSSI < 98U) {
 			RSSI = 0U;
 		} else {
@@ -96,6 +96,7 @@ static void CheckRSSI(void)
 			RSSI = 100;
 		}
 		UI_DrawBar(RSSI, gCurrentVfo);
+		gCurrentRssi[gCurrentVfo] = RSSI;
 	}
 }
 

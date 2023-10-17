@@ -2,6 +2,7 @@ TARGET = firmware
 
 MOTO_STARTUP_TONE 		:= 1
 LIGHT_THEME			:= 1
+ENABLE_AM_FIX			:= 1
 
 OBJS =
 # Startup files
@@ -47,6 +48,9 @@ OBJS += radio/frequencies.o
 OBJS += radio/hardware.o
 OBJS += radio/scheduler.o
 OBJS += radio/settings.o
+ifeq ($(ENABLE_AM_FIX), 1)
+        OBJS += task/am-fix.o
+endif
 OBJS += task/alarm.o
 OBJS += task/battery.o
 OBJS += task/cursor.o
@@ -134,6 +138,9 @@ ifeq ($(MOTO_STARTUP_TONE),1)
 endif
 ifeq ($(LIGHT_THEME),1)
 	CFLAGS += -DLIGHT_THEME
+endif
+ifeq ($(ENABLE_AM_FIX),1)
+	CFLAGS += -DENABLE_AM_FIX
 endif
 
 all: $(TARGET)

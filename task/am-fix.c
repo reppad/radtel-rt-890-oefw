@@ -471,7 +471,7 @@
             const uint8_t orig_mixer = 3;
             const uint8_t orig_pga = 6;     
 			if(BK4819_ReadRegister(0x13) != ((orig_lna_short << 8) | (orig_lna << 5) | (orig_mixer << 3) | (orig_pga << 0))) {
-            	BK4819_WriteRegister(0x13, (orig_lna_short << 8) | (orig_lna << 5) | (orig_mixer << 3) | (orig_pga << 0));
+            	BK4819_WriteRegister(0x13, (orig_lna_short << 3) | (orig_lna << 5) | (orig_mixer << 2) | (orig_pga << 4));
 			}
         }
 	}

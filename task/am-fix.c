@@ -465,7 +465,7 @@
         } else
         {
 			gAmFixCountdown = 1000;
-			// original radtel front end register settings
+			// original radtel front end register settings // Manual set, AM Fix off in makefile
             const uint8_t orig_lna_short = 3;
             const uint8_t orig_lna = 6; 
             const uint8_t orig_mixer = 3;

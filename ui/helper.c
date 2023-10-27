@@ -342,10 +342,10 @@ void UI_DrawVoltage(uint8_t Vfo)
 		regValue = (regValue & 0xF000) >> 12;
 		// If bit 15 is set, display AUTO, otherwise display FIX
 		gColorForeground = COLOR_GREY;
-		if ((regValue & 0x8) == 0x8) {
-			UI_DrawSmallString(16, Y, "AUTO", 4);
+        if ((regValue & 0x8) == 0x8) {
+			UI_DrawSmallString(16, Y, "FIX ", 4);
 		} else {
-			UI_DrawSmallString(16, Y, "FIX", 4);
+			UI_DrawSmallString(16, Y, "AUTO", 4);
 		}
 		// Display bits 14:12 as an integer
 		unsigned char curRegValue = (regValue & 0x7);
@@ -376,7 +376,7 @@ void UI_DrawVoltage(uint8_t Vfo)
 		gColorForeground = COLOR_GREEN;
 		Int2Ascii((regValue & 0x300) >> 8, 1);
 		UI_DrawSmallString(16, Y-16, "LNAS", 4);
-		UI_DrawSmallString(48, Y-16, gShortString, 1);
+		UI_DrawSmallString(40, Y-16, gShortString, 1);
 		// Next, logic to handle REG_43<14:12> (RF filter bandwidth)
 		regValue = BK4819_ReadRegister(0x43);
 		// Extract bits 14:12
@@ -387,23 +387,24 @@ void UI_DrawVoltage(uint8_t Vfo)
 		// Extract bits 11:9
 		gColorForeground = COLOR_GREY;
 		Int2Ascii(regValue & 0xE00 >> 9, 1);
-		UI_DrawSmallString(112, Y, "Weak", 4);
+		UI_DrawSmallString(112, Y, "WK", 2);
 		UI_DrawSmallString(136, Y, gShortString, 1);
+		gColorForeground = COLOR_GREEN;
+		UI_DrawSmallString(112, Y-16, "C", 1);
 		gColorForeground = COLOR_GREEN;
 		Int2Ascii(gBatteryVoltage, 2);
 		gShortString[2] = gShortString[1];
 		gShortString[1] = '.';
 		gShortString[3] = 'V';
-		UI_DrawSmallString(112, Y-16, gShortString, 4);
-		// orange = COLOR_RGB(31, 41, 0);
+		UI_DrawSmallString(118, Y-16, gShortString, 4);
 		gColorForeground = COLOR_GREY;
-		UI_DrawSmallString(16, Y-24, "RADTEL", 6);
-		gColorForeground = COLOR_RED;
-		UI_DrawSmallString(64, Y-24, "OEFW", 4);
+		UI_DrawSmallString(16, Y-24, "-----", 5);
 		gColorForeground = COLOR_GREY;
-		UI_DrawSmallString(112, Y-24, "RT-890", 6);
-		gColorForeground = COLOR_RGB(31, 41, 0);
-		UI_DrawSmallString(64, Y-16, "AM-MOD", 6);
+		UI_DrawSmallString(64, Y-24, "OEFW ", 5);
+		gColorForeground = COLOR_GREY;
+		UI_DrawSmallString(112, Y-24, "-----", 5);
+		gColorForeground = COLOR_GREEN;
+		UI_DrawSmallString(64, Y-16, "AMFIX", 5);
 	}
 }
 

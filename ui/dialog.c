@@ -34,13 +34,6 @@ void UI_DrawDialogText(UI_DialogText_t Text, bool bSet)
 			UI_DrawString(10, 48, "AM Fix: Off", 11);
 		}
 		break;
-	case DIALOG_TX_PRIORITY:
-		if (bSet) {
-			UI_DrawString(10, 48, "TX PRI: Busy", 12);
-		} else {
-			UI_DrawString(10, 48, "TX PRI: Edit", 12);
-		}
-		break;
 
 	case DIALOG_VOX:
 		if (bSet) {

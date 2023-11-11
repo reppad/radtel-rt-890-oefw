@@ -21,7 +21,6 @@
 #include <stdint.h>
 
 enum UI_DialogText_t {
-	DIALOG_TX_PRIORITY = 1,
 	DIALOG_VOX = 2,
 	DIALOG_AM_FIX = 3,
 	DIALOG_TX_POWER = 4,

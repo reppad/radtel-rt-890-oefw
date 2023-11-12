@@ -28,6 +28,11 @@ void UI_DrawDialogText(UI_DialogText_t Text, bool bSet)
 
 	switch (Text) {
 	case DIALOG_AM_FIX:
+		/*
+		// This way produces a larger binary even if it store less strings ?
+		UI_DrawString(10, 48, "AM Fix:", 7);
+		UI_DrawString(64, 48, bSet ? "On " : "Off", 3);
+		*/
 		if (bSet) {
 			UI_DrawString(10, 48, "AM Fix: On", 10);
 		} else {

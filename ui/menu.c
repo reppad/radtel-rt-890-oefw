@@ -264,8 +264,8 @@ void UI_DrawScrambler(uint8_t Index)
 void UI_DrawActivateBy(void)
 {
 	DISPLAY_Fill(1, 158, 1, 19, gColorBackground);
-	DISPLAY_DrawRectangle0(1, 20, 159, 1, gSettings.BorderColor);
-	gColorForeground = COLOR_RED;
+	DISPLAY_DrawRectangle0(1, 20, 159, 1, gColorForeground);
+	gColorForeground = COLOR_FOREGROUND;
 	UI_DrawString(20, 18, "Activate by [#]", 15);
 	gColorForeground = COLOR_FOREGROUND;
 }
@@ -276,7 +276,7 @@ void UI_DrawCursor(uint8_t X, bool bVisible)
 	uint16_t Color;
 
 	if (bVisible) {
-		Color = COLOR_RED;
+		Color = COLOR_FOREGROUND;
 	} else {
 		Color = gColorBackground;
 	}
@@ -298,7 +298,7 @@ void UI_DrawFrequencyStep(uint8_t Index)
 			"5K   ",
 			"6.25K",
 			"10K  ",
-			"12.5K",
+			"12.5k",
 			"20K  ",
 			"25K  ",
 			"50K  ",
@@ -310,7 +310,7 @@ void UI_DrawFrequencyStep(uint8_t Index)
 	};
 
 	UI_DrawSettingOptionEx(Mode[Index], 5, 0);
-	UI_DrawSettingOptionEx(Mode[(Index + 1) % 14], 5, 1);
+	UI_DrawSettingOptionEx(Mode[(Index + 1) % 15], 5, 1);
 }
 
 void UI_DrawTimer(uint8_t Index)

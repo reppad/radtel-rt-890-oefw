@@ -437,12 +437,12 @@ void BK4819_EnableVox(bool bEnable)
 
 void BK4819_RestoreGainSettings()
 {
-	const uint8_t orig_lna_short = 2;
-            const uint8_t orig_lna = 5;
-            const uint8_t orig_mixer = 2;
-            const uint8_t orig_pga = 5;
+	const uint8_t orig_lna_short = 3;
+            const uint8_t orig_lna = 6;
+            const uint8_t orig_mixer = 3;
+            const uint8_t orig_pga = 6;
 			if(BK4819_ReadRegister(0x13) != ((orig_lna_short << 8) | (orig_lna << 5) | (orig_mixer << 3) | (orig_pga << 0))) {
-            	BK4819_WriteRegister(0x13, (orig_lna_short << 8) | (orig_lna << 5) | (orig_mixer << 3) | (orig_pga << 0));
+            	BK4819_WriteRegister(0x13, (orig_lna_short << 3) | (orig_lna << 5) | (orig_mixer << 2) | (orig_pga << 4));
 			}
 }
 

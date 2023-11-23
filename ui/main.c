@@ -28,16 +28,15 @@
 void DrawStatusBar(void)
 {
 	DISPLAY_Fill(0, 159, 0, 96, COLOR_BACKGROUND);
-	// DISPLAY_DrawRectangle0(0, 41, 160, 1, gSettings.BorderColor);
+	DISPLAY_DrawRectangle0(0, 82, 160, 1, gColorForeground);
 
 	if (gSettings.DtmfState == DTMF_STATE_STUNNED) {
-		UI_DrawStatusIcon(4, ICON_LOCK, true, COLOR_RED);
+		UI_DrawStatusIcon(54, ICON_LOCK, true, COLOR_RED);
 	} else {
-		UI_DrawStatusIcon(4, ICON_LOCK, gSettings.Lock, COLOR_FOREGROUND);
+		UI_DrawStatusIcon(54, ICON_LOCK, gSettings.Lock, COLOR_FOREGROUND);
 	}
-
-	UI_DrawStatusIcon(56, ICON_DUAL_WATCH, gSettings.DualStandby, COLOR_FOREGROUND);
-	UI_DrawStatusIcon(80, ICON_VOX, gSettings.Vox, COLOR_FOREGROUND);
+	UI_DrawStatusIcon(4, ICON_DUAL_WATCH, gSettings.DualStandby, COLOR_FOREGROUND);
+	UI_DrawStatusIcon(26, ICON_VOX, gSettings.Vox, COLOR_FOREGROUND);
 	UI_DrawRoger();
 	UI_DrawRepeaterMode();
 	UI_DrawStatusIcon(139, ICON_BATTERY, true, COLOR_FOREGROUND);
@@ -46,9 +45,10 @@ void DrawStatusBar(void)
 
 void UI_DrawMain(bool bSkipStatus)
 {
+	
 	if (bSkipStatus) {
 		DISPLAY_Fill(0, 159, 0, 81, COLOR_BACKGROUND);
-		// DISPLAY_DrawRectangle0(0, 41, 160, 1, gSettings.BorderColor);
+		DISPLAY_DrawRectangle0(0, 82, 160, 1, gColorForeground);
 	} else {
 		DrawStatusBar();
 	}
@@ -79,18 +79,21 @@ void UI_DrawMain(bool bSkipStatus)
 		}
 	}
 }
-
+// Correct order
 void UI_DrawRepeaterMode(void)
 {
 	switch (gSettings.RepeaterMode) {
 	case 1:
-		UI_DrawStatusIcon(109, ICON_RR, true, COLOR_FOREGROUND);
+		gColorForeground = COLOR_FOREGROUND;
+		UI_DrawSmallString(65, 86, "TLK", 3);
 		break;
 	case 2:
-		UI_DrawStatusIcon(109, ICON_TR, true, COLOR_FOREGROUND);
+		gColorForeground = COLOR_FOREGROUND;
+		UI_DrawSmallString(65, 86, "RPT", 3);
 		break;
 	default:
-		UI_DrawStatusIcon(109, ICON_TR, false, COLOR_FOREGROUND);
+		gColorForeground = COLOR_FOREGROUND;
+		UI_DrawSmallString(65, 86, "   ", 3);
 		break;
 	}
 }
@@ -108,9 +111,9 @@ void UI_DrawBattery(void)
 	if (i < 6) {
 		Color = COLOR_RED;
 	} else if (i < 11) {
-		Color = COLOR_RGB(31, 41, 0);
+		Color = COLOR_FOREGROUND;
 	} else {
-		Color = COLOR_GREEN;
+		Color = COLOR_FOREGROUND;
 	}
 	DISPLAY_DrawRectangle0(142, 86, 15 - i, 8, gColorBackground);
 	DISPLAY_DrawRectangle0(157 - i, 86, i, 8, Color);

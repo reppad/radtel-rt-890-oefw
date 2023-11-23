@@ -173,7 +173,7 @@ static void EnableTextEditor(void)
 
 static void DrawSettingName(uint8_t Index)
 {
-	gColorForeground = COLOR_BLUE;
+	gColorForeground = COLOR_FOREGROUND;
 	UI_DrawString(24, 72, Menu[Index], 14);
 	Int2Ascii((Index + 1), 2);
 	UI_DrawString(140, 72, gShortString, 2);
@@ -463,7 +463,7 @@ void MENU_AcceptSetting(void)
 		break;
 
 	case MENU_SCAN_RESUME:
-		gExtendedSettings.ScanResume = ((gSettingCurrentValue + gSettingIndex) % gSettingMaxValues) + 1;
+		gExtendedSettings.ScanResume = (gSettingCurrentValue + gSettingIndex) % gSettingMaxValues +1;
 		SETTINGS_SaveGlobals();
 		break;
 
@@ -828,7 +828,7 @@ void MENU_DrawSetting(void)
 		break;
 
 	case MENU_SCAN_RESUME:
-		gSettingCurrentValue = gExtendedSettings.ScanResume - 1;
+		gSettingCurrentValue = gExtendedSettings.ScanResume -1;
 		gSettingMaxValues = 3;
 		DISPLAY_Fill(0, 159, 1, 55, COLOR_BACKGROUND);
 		UI_DrawSettingScanResume(gSettingCurrentValue);

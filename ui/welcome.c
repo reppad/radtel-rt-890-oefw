@@ -20,7 +20,7 @@
 
 void UI_DrawWelcome(void)
 {
-	gColorForeground = COLOR_RED;
+	gColorForeground = COLOR_FOREGROUND;
 	UI_DrawString(gSettings.WelcomeX, gSettings.WelcomeY, WelcomeString, sizeof(WelcomeString));
 }
 

@@ -59,7 +59,7 @@ static void DisableFM(void)
 void FM_Play(void)
 {
 	if (gScreenMode == SCREEN_MAIN && gFM_Mode < FM_MODE_PLAY) {
-		UI_DrawFM();
+		//UI_DrawFM();
 		UI_DrawFMFrequency(gSettings.FmFrequency);
 		BK1080_Init();
 	} else {

@@ -141,12 +141,12 @@ bool DATA_ReceiverCheck(void)
 			if (gDTMF_Stun.Length != 0 && DTMF_strcmp(&gDTMF_Stun, gDTMF_String)) {
 				gSettings.DtmfState = DTMF_STATE_STUNNED;
 				SETTINGS_SaveGlobals();
-				UI_DrawStatusIcon(4, ICON_LOCK, true, COLOR_RED);
+				UI_DrawStatusIcon(54, ICON_LOCK, true, COLOR_RED);
 			}
 		} else if (gSettings.DtmfState == DTMF_STATE_STUNNED) {
 			gSettings.DtmfState = DTMF_STATE_NORMAL;
 			SETTINGS_SaveGlobals();
-			UI_DrawStatusIcon(4, ICON_LOCK, gSettings.Lock, COLOR_FOREGROUND);
+			UI_DrawStatusIcon(54, ICON_LOCK, gSettings.Lock, COLOR_FOREGROUND);
 		} else if (gSettings.DtmfState == DTMF_STATE_KILLED) {
 			gSettings.DtmfState = DTMF_STATE_NORMAL;
 			SETTINGS_SaveGlobals();

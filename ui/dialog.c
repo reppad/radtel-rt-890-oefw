@@ -24,7 +24,7 @@ void UI_DrawDialogText(UI_DialogText_t Text, bool bSet)
 {
 	UI_DrawDialog();
 
-	gColorForeground = COLOR_RED;
+	gColorForeground = COLOR_FOREGROUND;
 
 	switch (Text) {
 	case DIALOG_AM_FIX:

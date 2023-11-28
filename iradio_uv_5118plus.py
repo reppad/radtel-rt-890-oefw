@@ -39,13 +39,20 @@ struct memory {
      lowpower:1,    // Power
      scan:1,        // Scan Add
      bcl:2,         // Busy Lock
-     is_airband:1,  // Air Band (AM)
-     unknown_3:1,   //
+     modulation_type:2,  // RX Modulation Type 
      unknown_4:1;   //
   u8 unknown_5;     //                       01
   u8 unused_0:4,    //                       02
      scno:4;        // SC No.
-  u8 unknown_6[3];  //                       03-05
+  u8 scanlist8:1,   //                       03
+     scanlist7:1,
+     scanlist6:1,
+     scanlist5:1,
+     scanlist4:1,
+     scanlist3:1,
+     scanlist2:1,
+     scanlist1:1;
+  u8 unknown_6[2];  //                       04-05
   char name[10];    //                       06-0f
 };
 
@@ -183,6 +190,8 @@ LIST_WORKMODE = ["Frequency", "Channel"]
 
 TXALLOW_CHOICES = ["RX Only", "TX/RX"]
 TXALLOW_VALUES = [0xFF, 0x00]
+
+LIST_SCANLIST = ["", "Yes"]
 
 VALID_CHARS = chirp_common.CHARSET_ALPHANUMERIC + \
     "`{|}!\"#$%&'()*+,-./:;<=>?@[]^_"
@@ -352,9 +361,9 @@ def _split(rf, f1, f2):
 
 
 class IradioUV5118plus(chirp_common.CloneModeRadio):
-    """IRADIO UV5118plus"""
-    VENDOR = "Iradio"
-    MODEL = "UV-5118plus"
+    """Radtel RT-890 Custom"""
+    VENDOR = "Radtel"
+    MODEL = "RT-890 Custom"
     NAME_LENGTH = 10
     BAUD_RATE = 115200
     NEEDS_COMPAT_SERIAL = False
@@ -368,7 +377,7 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
                    (240000000, 320000000),  # TX/RX
                    (320000000, 400000000),  # TX/RX
                    (400000000, 480000000),  # TX/RX (UHF)
-                   (480000000, 560000000)]  # TX/RX
+                   (480000000, 1300000000)]  # TX/RX
 
     POWER_LEVELS = [chirp_common.PowerLevel("High", watts=2.00),
                     chirp_common.PowerLevel("Low", watts=0.50)]
@@ -406,7 +415,7 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
                                 "->Tone", "->DTCS", "DTCS->", "DTCS->DTCS"]
         rf.valid_power_levels = self.POWER_LEVELS
         rf.valid_duplexes = ["", "-", "+", "split"]
-        rf.valid_modes = ["FM", "NFM"]  # 25 kHz, 12.5 kHz.
+        rf.valid_modes = ["FM", "NFM", "AM", "LSB", "USB"]  # FM:25 kHz, NFM:12.5 kHz.
         rf.valid_dtcs_codes = DTCS_CODES
         rf.memory_bounds = (1, self._upper)
         rf.valid_tuning_steps = _STEP_LIST
@@ -523,12 +532,7 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
 
         mem.name = str(_mem.name).rstrip(" ").replace("\xFF", " ")
 
-        mem.mode = _mem.isnarrow and "NFM" or "FM"
-
-        if mem.freq < 136000000:
-            _mem.is_airband = True
-        else:
-            _mem.is_airband = False
+        mem.mode = "NFM" if _mem.isnarrow else ["FM", "AM", "LSB", "USB"][_mem.modulation_type]
 
         chirp_common.split_tone_decode(mem,
                                        self._decode_tone(_mem.tx_tone),
@@ -555,6 +559,38 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
 
         rs = RadioSettingValueInteger(0, 8, _mem.scno)
         rset = RadioSetting("scno", "SC No. (0-8)", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist1])
+        rset = RadioSetting("scanlist1", "Scan List 1", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist2])
+        rset = RadioSetting("scanlist2", "Scan List 2", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist3])
+        rset = RadioSetting("scanlist3", "Scan List 3", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist4])
+        rset = RadioSetting("scanlist4", "Scan List 4", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist5])
+        rset = RadioSetting("scanlist5", "Scan List 5", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist6])
+        rset = RadioSetting("scanlist6", "Scan List 6", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist7])
+        rset = RadioSetting("scanlist7", "Scan List 7", rs)
+        mem.extra.append(rset)
+
+        rs = RadioSettingValueList(LIST_SCANLIST, LIST_SCANLIST[_mem.scanlist8])
+        rset = RadioSetting("scanlist8", "Scan List 8", rs)
         mem.extra.append(rset)
 
         return mem
@@ -586,6 +622,8 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
 
         _mem.scan = mem.skip != "S"
         _mem.isnarrow = mem.mode == "NFM"
+        _mem.modulation_type = 0 if _mem.isnarrow else ["FM", "AM", "LSB", "USB"].index(mem.mode)
+
 
         # dtcs_pol = ["N", "N"]
 

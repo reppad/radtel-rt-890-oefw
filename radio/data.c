@@ -50,7 +50,7 @@ static void DrawFSK(void)
 	Value0 = GetU32(0);
 	Value5 = GetU32(5);
 	UI_DrawDialog();
-	gColorForeground = COLOR_RED;
+	gColorForeground = COLOR_FOREGROUND;
 
 	Int2Ascii(Value0, 8);
 	for (i = 8; i > 3; i--) {
@@ -73,11 +73,11 @@ static void DrawReceivedFSKID(void)
 {
 	if (gScreenMode == SCREEN_MAIN && !gReceptionMode) {
 		UI_DrawDialog();
-		gColorForeground = COLOR_RED;
+		gColorForeground = COLOR_FOREGROUND;
 		if (gCurrentVfo == 1) {
-			UI_DrawString(10, 54, "Area B ID:", 10);
+			UI_DrawString(10, 54, "Sender ID:", 10);// Area B
 		} else {
-			UI_DrawString(10, 54, "Area A ID:", 10);
+			UI_DrawString(10, 54, "Sender ID:", 10);// Area A
 		}
 		UI_DrawString(10, 38, FSK, 16);
 	}
@@ -141,12 +141,12 @@ bool DATA_ReceiverCheck(void)
 			if (gDTMF_Stun.Length != 0 && DTMF_strcmp(&gDTMF_Stun, gDTMF_String)) {
 				gSettings.DtmfState = DTMF_STATE_STUNNED;
 				SETTINGS_SaveGlobals();
-				UI_DrawStatusIcon(4, ICON_LOCK, true, COLOR_RED);
+				UI_DrawStatusIcon(54, ICON_LOCK, true, COLOR_RED);
 			}
 		} else if (gSettings.DtmfState == DTMF_STATE_STUNNED) {
 			gSettings.DtmfState = DTMF_STATE_NORMAL;
 			SETTINGS_SaveGlobals();
-			UI_DrawStatusIcon(4, ICON_LOCK, gSettings.Lock, COLOR_FOREGROUND);
+			UI_DrawStatusIcon(54, ICON_LOCK, gSettings.Lock, COLOR_FOREGROUND);
 		} else if (gSettings.DtmfState == DTMF_STATE_KILLED) {
 			gSettings.DtmfState = DTMF_STATE_NORMAL;
 			SETTINGS_SaveGlobals();

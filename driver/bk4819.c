@@ -154,7 +154,7 @@ static void DisableAGC(uint32_t Unknown)
 }
 #endif
 
-static void OpenAudio(bool bIsNarrow, uint8_t gModulationType)
+void OpenAudio(bool bIsNarrow, uint8_t gModulationType)
 {
 	switch(gModulationType) {
 		case 0:
@@ -395,14 +395,14 @@ void BK4819_EnableFilter(bool bEnable)
 	BK4819_WriteRegister(0x33, Value);
 }
 
-void BK4819_EnableScramble(bool bIsNarrow)
+void BK4819_EnableScramble(uint8_t Scramble)
 {
 	uint16_t Value;
 
-	BK4819_WriteRegister(0x71, 0x68DC | (bIsNarrow ? 0x0400 : 0x0000));
+	BK4819_WriteRegister(0x71, 0x68DC | (Scramble * 1032));
 
 	Value = BK4819_ReadRegister(0x31);
-	if (bIsNarrow) {
+	if (Scramble) {
 		Value |= 2;
 	} else {
 		Value &= ~2;
@@ -437,12 +437,12 @@ void BK4819_EnableVox(bool bEnable)
 
 void BK4819_RestoreGainSettings()
 {
-	const uint8_t orig_lna_short = 2;
-            const uint8_t orig_lna = 5;
-            const uint8_t orig_mixer = 2;
-            const uint8_t orig_pga = 5;
+	const uint8_t orig_lna_short = 3;
+            const uint8_t orig_lna = 6;
+            const uint8_t orig_mixer = 3;
+            const uint8_t orig_pga = 6;
 			if(BK4819_ReadRegister(0x13) != ((orig_lna_short << 8) | (orig_lna << 5) | (orig_mixer << 3) | (orig_pga << 0))) {
-            	BK4819_WriteRegister(0x13, (orig_lna_short << 8) | (orig_lna << 5) | (orig_mixer << 3) | (orig_pga << 0));
+            	BK4819_WriteRegister(0x13, (orig_lna_short << 3) | (orig_lna << 5) | (orig_mixer << 2) | (orig_pga << 4));
 			}
 }
 
@@ -459,6 +459,7 @@ void BK4819_ToggleAGCMode(bool bAuto)
 		// Set bits 14:12 to 110 (AGC index 4) without affecting the other bits
 		Value = (Value & 0x8FFFU) | 0x6000U;
 	}
+	BK4819_WriteRegister(0x7E, Value);
 }
 
 void BK4819_SetToneFrequency(bool Tone2, uint16_t Tone)
@@ -496,10 +497,10 @@ void BK4819_StartAudio(void)
 		BK4819_WriteRegister(0x4D, 0xA080);
 		BK4819_WriteRegister(0x4E, 0x6F7C);
 	}
-	
+
 	if (gMainVfo->gModulationType > 0) {
 		// AM, SSB
-		BK4819_EnableScramble(false);
+		BK4819_EnableScramble(0);
 		BK4819_EnableCompander(false);
 		// Set bit 4 of register 73 (Auto Frequency Control Disable)
 		uint16_t reg_73 = BK4819_ReadRegister(0x73);
@@ -593,7 +594,7 @@ void BK4819_EnableTone1(bool bEnable)
 		} else {
 			OpenAudio(gMainVfo->bIsNarrow, gMainVfo->gModulationType);
 			if (gMainVfo->gModulationType > 0) {
-				BK4819_EnableScramble(false); // AM, SSB
+				BK4819_EnableScramble(0); // AM, SSB
 			} else {
 				BK4819_EnableScramble(gMainVfo->Scramble); // FM
 			}
@@ -680,3 +681,17 @@ void BK4819_DisableAutoCssBW(void)
 	BK4819_EnableRX();
 }
 
+#ifdef ENABLE_SPECTRUM
+void BK4819_set_rf_frequency(const uint32_t frequency, const bool trigger_update)
+{
+	BK4819_WriteRegister(0x38, (frequency >> 0) & 0xFFFF);
+	BK4819_WriteRegister(0x39, (frequency >> 16) & 0xFFFF);
+
+	if (trigger_update)
+	{ // trigger a PLL/VCO update
+		const uint16_t reg = BK4819_ReadRegister(0x30);
+		BK4819_WriteRegister(0x30, reg & ~BK4819_REG_30_ENABLE_VCO_CALIB);
+		BK4819_WriteRegister(0x30, reg);
+	}
+}
+#endif

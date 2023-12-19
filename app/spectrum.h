@@ -14,16 +14,17 @@
  *     limitations under the License.
  */
 
-#ifndef UI_MAIN_H
-#define UI_MAIN_H
+#ifndef RADIO_SPECTRUM_H
+#define RADIO_SPECTRUM_H
 
-#include <stdbool.h>
-#include <stdint.h>
+enum {
+  STEPS_128,
+  STEPS_64,
+  STEPS_32,
+  STEPS_16,
+  STEPS_COUNT,
+};
 
-void DrawStatusBar(void);
-void UI_DrawMain(bool bSkipStatus);
-void UI_DrawRepeaterMode(void);
-void UI_DrawBattery(void);
+void APP_Spectrum(void);
 
 #endif
-

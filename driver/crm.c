@@ -53,8 +53,8 @@ static void EnablePLL(void)
 		// Clear pllrcs, pllhextdiv, pllmult_l, pllmult_h
 		CRM->cfg &= 0x1FC0FFFF;
 		// Set pllmult_h = 1, pllmult_l = 1
-		CRM->cfg |= 0x20040000; // 72MHz
-		//CRM->cfg |= 0x20340000; // 120MHz
+		//CRM->cfg |= 0x20040000; // 72MHz
+		CRM->cfg |= 0x20340000; // 120MHz
 		CRM->ctrl_bit.pllen = 1;
 		while (CRM->ctrl_bit.pllstbl == 0) {
 			// PLL not stable

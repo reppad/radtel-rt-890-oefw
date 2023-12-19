@@ -39,11 +39,13 @@ enum {
 	ACTION_BACKLIGHT,
 	ACTION_FREQ_STEP,
 	ACTION_BEEP,
-	ACTION_SKIP_SCAN,
+	ACTION_TOGGLE_SCANLIST,		// add/remove current channel from current scanlist
 	ACTION_DTMF_DECODE,
 	ACTION_DUAL_DISPLAY,
 	ACTION_TX_FREQ,
 	ACTION_LOCK,
+	ACTION_SPECTRUM,
+	ACTION_DARK_MODE,
 	ACTIONS_COUNT,	// used to count the number of actions, keep this last
 };
 

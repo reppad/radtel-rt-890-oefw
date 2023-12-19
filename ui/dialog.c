@@ -24,7 +24,7 @@ void UI_DrawDialogText(UI_DialogText_t Text, bool bSet)
 {
 	UI_DrawDialog();
 
-	gColorForeground = COLOR_RED;
+	gColorForeground = COLOR_FOREGROUND;
 
 	switch (Text) {
 	case DIALOG_AM_FIX:
@@ -34,6 +34,7 @@ void UI_DrawDialogText(UI_DialogText_t Text, bool bSet)
 			UI_DrawString(10, 48, "AM Fix: Off", 11);
 		}
 		break;
+		
 	case DIALOG_TX_PRIORITY:
 		if (bSet) {
 			UI_DrawString(10, 48, "TX PRI: Busy", 12);
@@ -74,11 +75,11 @@ void UI_DrawDialogText(UI_DialogText_t Text, bool bSet)
 		}
 		break;
 
-	case DIALOG_SKIP_SCAN:
+	case DIALOG_TOGGLE_SCANLIST:
 		if (bSet) {
-			UI_DrawString(10, 48, "Skip Scan: Scan", 15);
+			UI_DrawString(10, 48, "SList: Ch Added", 15);
 		} else {
-			UI_DrawString(10, 48, "Skip Scan: Skip", 15);
+			UI_DrawString(10, 48, "SList: Ch Removed", 17);
 		}
 		break;
 

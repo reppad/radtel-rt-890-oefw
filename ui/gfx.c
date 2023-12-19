@@ -27,6 +27,8 @@ uint16_t COLOR_RED;
 uint16_t COLOR_GREEN;
 uint16_t COLOR_BLUE;
 uint16_t COLOR_GREY;
+uint16_t COLOR_WHITE; // added
+uint16_t COLOR_BLACK; // added
 
 void DISPLAY_FillColor(uint16_t Color)
 {
@@ -63,17 +65,54 @@ void DISPLAY_DrawRectangle1(uint8_t X, uint8_t Y, uint8_t H, uint8_t W, uint16_t
 void UI_SetColors(uint8_t DarkMode)
 {
 	if (DarkMode) {
-		COLOR_BACKGROUND = COLOR_RGB( 0,  0,  0);
-		COLOR_FOREGROUND = COLOR_RGB(31, 63, 31);
+		// Enable color changes by uncommenting //; default *Black
+		// COLOR_BACKGROUND = COLOR_RGB( 0,   0,   0); // Black/Blue
+		// COLOR_FOREGROUND = COLOR_RGB( 0,  24,  31); // Black/Blue
+		// COLOR_BACKGROUND = COLOR_RGB( 0,  0,  0); // Black/Green
+		// COLOR_FOREGROUND = COLOR_RGB( 0, 63,  0); // Black/Green
+		COLOR_BACKGROUND = COLOR_RGB( 0,  0,  0); // Black/Orange
+		COLOR_FOREGROUND = COLOR_RGB(31, 41,  0); // Black/Orange
+		// COLOR_BACKGROUND = COLOR_RGB( 0,  0,  0); // Black *
+		// COLOR_FOREGROUND = COLOR_RGB(31, 63, 31); // Black *
+		// COLOR_BACKGROUND = COLOR_RGB( 0,  0, 16); // Blue
+		// COLOR_FOREGROUND = COLOR_RGB( 0, 24, 31); // Blue
+		// COLOR_BACKGROUND = COLOR_RGB( 0, 16,  0); // Green
+		// COLOR_FOREGROUND = COLOR_RGB(16, 45,  0); // Green
+		// COLOR_BACKGROUND = COLOR_RGB( 0,  0, 0);  // Grey
+		// COLOR_FOREGROUND = COLOR_RGB(16, 32, 16); // Grey
+		// COLOR_BACKGROUND = COLOR_RGB(16, 16,  0); // Orange
+		// COLOR_FOREGROUND = COLOR_RGB(31, 41,  0); // Orange
+		
 	} else {
-		COLOR_BACKGROUND = COLOR_RGB(31, 63, 31);
-		COLOR_FOREGROUND = COLOR_RGB( 0,  0,  0);
+		// Enable color changes by uncommenting //; default ** White
+		// COLOR_BACKGROUND = COLOR_RGB( 0, 24, 31); // Black/Blue
+		// COLOR_FOREGROUND = COLOR_RGB( 0,  0,  0); // Black/Blue
+		// COLOR_BACKGROUND = COLOR_RGB( 0, 63,  0); // Black/Green
+		// COLOR_FOREGROUND = COLOR_RGB( 0,  0,  0); // Black/Green
+	    COLOR_BACKGROUND = COLOR_RGB(31, 41,  0); // Black/Orange  
+		COLOR_FOREGROUND = COLOR_RGB( 0,  0,  0); // Black/Orange
+		// COLOR_BACKGROUND = COLOR_RGB( 0, 24, 31); // Blue    
+		// COLOR_FOREGROUND = COLOR_RGB( 0,  0, 16); // Blue
+		// COLOR_BACKGROUND = COLOR_RGB(16, 32, 16); // Grey
+		// COLOR_FOREGROUND = COLOR_RGB( 0,  0,  0); // Grey
+		// COLOR_BACKGROUND = COLOR_RGB(16, 45,  0); // Green   
+		// COLOR_FOREGROUND = COLOR_RGB( 0, 16,  0); // Green
+	    // COLOR_BACKGROUND = COLOR_RGB(31, 41,  0); // Orange  
+		// COLOR_FOREGROUND = COLOR_RGB(16, 16,  0); // Orange
+		// COLOR_BACKGROUND = COLOR_RGB(31, 63, 31); // White **    
+		// COLOR_FOREGROUND = COLOR_RGB( 0,  0,  0); // White **
+
 	}
 	COLOR_RED   = COLOR_RGB(31,  0,  0);
 	COLOR_GREEN = COLOR_RGB( 0, 63,  0);
 	COLOR_BLUE  = COLOR_RGB( 0,  0, 31);
 	COLOR_GREY  = COLOR_RGB(16, 32, 16);
+	// COLOR_WHITE  = COLOR_RGB(31, 63, 31); // added
+	// COLOR_BLACK  = COLOR_RGB( 0,  0,  0); // added
 
 	gColorBackground = COLOR_BACKGROUND;
 	gColorForeground = COLOR_FOREGROUND;
+	
+	DISPLAY_FillColor(COLOR_BACKGROUND);
 }
+

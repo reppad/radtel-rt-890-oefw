@@ -39,44 +39,52 @@
 
 static const char Menu[][14] = {
 	"Startup Logo  ",
-	"Voltage       ",
-	"Ringtone      ",
-	"Prompt Text   ",
+	"Cell Voltage  ",
+	"Startup Tone  ",
+	"Startup Text  ",
 	"Voice Prompt  ",
 	"Key Beep      ",
-	"Roger Beep    ",
+	"TX Tone       ",
 	"Dual Display  ",
 	"TX Priority   ",
-	"Save Mode     ",
+	"Power Save    ",
 	"Freq Step     ",
-	"SQ Level      ",
-	"LED Timer     ",
-	"Lock Timer    ",
-	"TOT           ",
+	"Squelch Level ",
+	"Backlight     ",
+	"Lock Time     ",
+	"Time Of Talk  ",
 	"VOX Level     ",
 	"VOX Delay     ",
 	"NOAA Monitor  ",
 	"FM Standby    ",
 	"Tail Tone     ",
-	"Scan DIR      ",
-	"Personal ID   ",
+	"Scan >>>      ",
+	"FSK ID        ",
 	"Repeater Mode ",
 	"Scan Resume   ",
-	"Scan Blink    ",
+	"Scan LED      ",
 	"CTCSS/DCS     ",
 	"RX CTCSS/DCS  ",
 	"TX CTCSS/DCS  ",
 	"TX Power      ",
 	"Modulation    ",
-	"Band Width    ",
-	"Skip Scan     ",
+	"Bandwidth     ",
+	"List To Scan  ",
+	"Ch In List 1  ",
+	"Ch In List 2  ",
+	"Ch In List 3  ",
+	"Ch In List 4  ",
+	"Ch In List 5  ",
+	"Ch In List 6  ",
+	"Ch In List 7  ",
+	"Ch In List 8  ",
 	"Busy Lock     ",
-	"Scrambler     ",
+	"Invert Speech ",
 	"DCS Encrypt   ",
 	"Mute Code     ",
-	"CH Name       ",
-	"Save CH       ",
-	"Delete CH     ",
+	"Channel Name  ",
+	"Save Channel  ",
+	"Delete Channel",
 	"Side 1 Long   ",
 	"Side 1 Short  ",
 	"Side 2 Long   ",
@@ -101,7 +109,7 @@ static const char Menu[][14] = {
 	"DTMF Mode     ",
 	"DTMF Select   ",
 	"DTMF Display  ",
-	"Dark Mode     ",
+	"Dark Theme    ",
 	"Initialize    ",
 	"Version       ",
 };
@@ -125,7 +133,7 @@ static const ChannelInfo_t EmptyChannel = {
 
 	._0x11 = 0xFF,
 	.Scramble = 0xFF,
-	._0x13 = 0xFF,
+	.IsInscanList = 0xFF,
 	._0x14 = 0xFF,
 	._0x15 = 0xFF,
 	.Name = "          ",
@@ -173,7 +181,7 @@ static void EnableTextEditor(void)
 
 static void DrawSettingName(uint8_t Index)
 {
-	gColorForeground = COLOR_BLUE;
+	gColorForeground = COLOR_FOREGROUND;
 	UI_DrawString(24, 72, Menu[Index], 14);
 	Int2Ascii((Index + 1), 2);
 	UI_DrawString(140, 72, gShortString, 2);
@@ -273,7 +281,7 @@ static void DrawEditChannel(void)
 	}
 	gInputBoxWriteIndex = 0;
 	INPUTBOX_Pad(0, 10);
-	UI_DrawString(128, 76, "   ", 3);
+	UI_DrawString(132, 48, "   ", 3);
 	if (Channel && Channel < 1000) {
 		gSettingCurrentValue = Channel - 1;
 		UI_DrawChannelName(gSettingCurrentValue);
@@ -463,7 +471,7 @@ void MENU_AcceptSetting(void)
 		break;
 
 	case MENU_SCAN_RESUME:
-		gExtendedSettings.ScanResume = (gSettingCurrentValue + gSettingIndex) % gSettingMaxValues;
+		gExtendedSettings.ScanResume = ((gSettingCurrentValue + gSettingIndex) % gSettingMaxValues) + 1;
 		SETTINGS_SaveGlobals();
 		break;
 
@@ -507,10 +515,28 @@ void MENU_AcceptSetting(void)
 		CHANNELS_SaveVfo();
 		break;
 
-	case MENU_SKIP_SCAN:
-		gVfoState[gSettings.CurrentVfo].ScanAdd = gSettingIndex;
+	case MENU_LIST_TO_SCAN:
+		gExtendedSettings.ScanAll = (gSettingCurrentValue + gSettingIndex) % gSettingMaxValues == 8;
+		if (!gExtendedSettings.ScanAll) {
+			gExtendedSettings.CurrentScanList = (gSettingCurrentValue + gSettingIndex) % gSettingMaxValues;
+		}
+		SETTINGS_SaveGlobals();
+		break;
+
+	case MENU_SCANLIST_1:
+	case MENU_SCANLIST_2:
+	case MENU_SCANLIST_3:
+	case MENU_SCANLIST_4:
+	case MENU_SCANLIST_5:
+	case MENU_SCANLIST_6:
+	case MENU_SCANLIST_7:
+	case MENU_SCANLIST_8:
+		gVfoState[gSettings.CurrentVfo].IsInscanList =
+				(gVfoState[gSettings.CurrentVfo].IsInscanList & ~(1 << (gMenuIndex - MENU_SCANLIST_1)))	// cleaning the bit corresponding to the scanlist
+				| (gSettingIndex << (gMenuIndex - MENU_SCANLIST_1));									// set the bit to 1 if gSettingIndex = "On"
 		CHANNELS_SaveVfo();
 		break;
+
 
 	case MENU_BUSY_LOCK:
 		gVfoState[gSettings.CurrentVfo].BCL = (gSettingCurrentValue + gSettingIndex) % gSettingMaxValues;
@@ -651,6 +677,9 @@ void MENU_AcceptSetting(void)
 	case MENU_DARK_MODE:
 		gExtendedSettings.DarkMode = gSettingIndex;
 		SETTINGS_SaveGlobals();
+		UI_SetColors(gExtendedSettings.DarkMode);
+		DrawStatusBar();
+		MENU_Redraw(true);
 		break;
 
 	case MENU_INITIALIZE:
@@ -825,8 +854,9 @@ void MENU_DrawSetting(void)
 		break;
 
 	case MENU_SCAN_RESUME:
-		gSettingCurrentValue = gExtendedSettings.ScanResume;
+		gSettingCurrentValue = gExtendedSettings.ScanResume - 1;
 		gSettingMaxValues = 3;
+		DISPLAY_Fill(0, 159, 1, 55, COLOR_BACKGROUND);
 		UI_DrawSettingScanResume(gSettingCurrentValue);
 		break;
 	
@@ -875,10 +905,23 @@ void MENU_DrawSetting(void)
 		UI_DrawSettingBandwidth();
 		break;
 
-	case MENU_SKIP_SCAN:
-		gSettingIndex = gVfoState[gSettings.CurrentVfo].ScanAdd;
+	case MENU_LIST_TO_SCAN:
+		gSettingCurrentValue = gExtendedSettings.ScanAll ? 8 : gExtendedSettings.CurrentScanList;
+		gSettingMaxValues = 9;
 		DISPLAY_Fill(0, 159, 1, 55, COLOR_BACKGROUND);
-		UI_DrawSettingSkipScan();
+		UI_DrawSettingScanlist(gSettingCurrentValue);
+		break;
+
+	case MENU_SCANLIST_1:
+	case MENU_SCANLIST_2:
+	case MENU_SCANLIST_3:
+	case MENU_SCANLIST_4:
+	case MENU_SCANLIST_5:
+	case MENU_SCANLIST_6:
+	case MENU_SCANLIST_7:
+	case MENU_SCANLIST_8:
+		gSettingIndex = ((gVfoState[gSettings.CurrentVfo].IsInscanList >> (gMenuIndex - MENU_SCANLIST_1)) & 1);	// pick the bit corresponding to the scanlist
+		UI_DrawToggle();
 		break;
 
 	case MENU_BUSY_LOCK:
@@ -1097,7 +1140,14 @@ void MENU_SettingKeyHandler(uint8_t Key)
 			if (Key == KEY_MENU) {
 				MENU_AcceptSetting();
 			}
-			if (gMenuIndex == MENU_PERSONAL_ID || gMenuIndex == MENU_CH_NAME || gMenuIndex == MENU_CTCSS_DCS || gMenuIndex == MENU_RX_CTCSS_DCS || gMenuIndex == MENU_TX_CTCSS_DCS) {
+			if (gMenuIndex == MENU_PERSONAL_ID
+					|| gMenuIndex == MENU_CH_NAME
+					|| gMenuIndex == MENU_CTCSS_DCS
+					|| gMenuIndex == MENU_RX_CTCSS_DCS
+					|| gMenuIndex == MENU_TX_CTCSS_DCS
+					|| gMenuIndex == MENU_SCAN_RESUME
+					|| gMenuIndex == MENU_SAVE_CH
+					|| gMenuIndex == MENU_DELETE_CH) {
 				MENU_Redraw(true);
 			} else {
 				MENU_Redraw(false);
@@ -1229,8 +1279,8 @@ void MENU_ScrollSetting(uint8_t Key)
 		UI_DrawSettingBandwidth();
 		break;
 
-	case MENU_SKIP_SCAN:
-		UI_DrawSettingSkipScan();
+	case MENU_LIST_TO_SCAN:
+		UI_DrawSettingScanlist(gSettingCurrentValue);
 		break;
 
 	case MENU_BUSY_LOCK:

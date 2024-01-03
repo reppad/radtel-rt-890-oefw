@@ -383,17 +383,17 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
                     chirp_common.PowerLevel("Low", watts=0.50)]
 
     # Radio's write address starts at 0x0000
-    # Radio's write address ends at 0x0140
+    # Radio's write address ends at 0x0280
     START_ADDR = 0
-    END_ADDR = 0x0140
+    END_ADDR = 0x0280
     # Radio's read address starts at 0x7820
-    # Radio's read address ends at 0x795F
+    # Radio's gExtendedSettings read address ends at 0x7AA1
     READ_OFFSET = 0x7820
 
     _ranges = [
-               (0x0000, 0x0140),
+               (0x0000, 0x0280),
               ]
-    _memsize = 0xA000  # 0x0140 * 0x80
+    _memsize = 0x14000  # 0x0280 * 0x80
 
     _upper = 999
 
@@ -1104,6 +1104,6 @@ class IradioUV5118plus(chirp_common.CloneModeRadio):
 
 @directory.register
 class RuyageUV58PlusRadio(IradioUV5118plus):
-    """Ruyage UV58Plus"""
-    VENDOR = "Ruyage"
-    MODEL = "UV58Plus"
+    """Radtel RT-890 Custom"""
+    VENDOR = "Radtel"
+    MODEL = "RT-890 Custom"
